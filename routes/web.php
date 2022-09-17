@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\admin\UsersController;
+use App\Http\Controllers\admin\DashboardIndexController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,12 +15,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Non-admin routes
+Route::get('/', function () { return view('layouts/blog'); })->name('layouts/blog');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
-
+// Admin routes
 require __DIR__.'/auth.php';
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardIndexController::class, 'index'])->name('layouts/admin/dashboard');
+    Route::get('/users',     [UsersController::class, 'index']);
+});
